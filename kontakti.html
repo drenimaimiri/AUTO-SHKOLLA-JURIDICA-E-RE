@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="sq">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Auto Shkolla Focus</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    function toggleMenu() {
+      const menu = document.getElementById('mobile-menu');
+      menu.classList.toggle('hidden');
+    }
+  </script>
+</head>
+
+<body class="bg-gray-50 flex flex-col min-h-screen">
+
+  <!-- NAVBAR -->
+  <nav class="bg-red-800 p-3">
+    <div class="mx-auto max-w-7xl flex justify-between items-center">
+      <div class="flex items-center">
+        <img class="h-10 w-auto rounded-md" src="IMG_4779.jpeg" alt="Logo" />
+        <div class="hidden sm:flex space-x-6 ml-6">
+          <a href="index.html" class="text-white font-medium hover:text-gray-300">Ballina</a>
+          <a href="veturat.html" class="text-white font-medium hover:text-gray-300">Veturat</a>
+          <a href="#" class="text-white font-medium hover:text-gray-300">Kontakti</a>
+        </div>
+      </div>
+      <!-- Mobile menu button -->
+      <div class="sm:hidden">
+        <button onclick="toggleMenu()" class="text-white">
+          <svg class="h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M4 6h16M4 12h16M4 18h16"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+    <!-- Mobile menu -->
+    <div id="mobile-menu" class="hidden sm:hidden bg-red-700 transition-all duration-300">
+      <a href="index.html" class="block px-4 py-3 text-white hover:bg-red-600">Ballina</a>
+      <a href="veturat.html" class="block px-4 py-3 text-white hover:bg-red-600">Veturat</a>
+      <a href="#" class="block px-4 py-3 text-white hover:bg-red-600">Kontakti</a>
+    </div>
+  </nav>
+
+<!-- CARD KONTAKTI ME PËRMASA MË TË MËDHA -->
+<main class="flex-grow flex items-center justify-center py-20 px-4">
+  <div class="bg-white shadow-2xl rounded-3xl p-10 max-w-xl w-full text-center border-2 border-red-400">
+    <h2 class="text-4xl font-bold text-red-800 mb-6">Rabit Osmani</h2>
+    <p class="text-gray-800 text-xl mb-4">📞 <strong>Kontakti:</strong> +383 44 249 231</p>
+    <p class="text-gray-800 text-xl">📧 <strong>Email:</strong> rabit_o@hotmail.com</p>
+  </div>
+</main>
+
+
+ <!-- FOOTER -->
+  <footer class="bg-red-800 text-white py-8 mt-10">
+    <div class="max-w-7xl mx-auto px-4 text-center">
+      <p class="text-lg font-bold">&copy; 2025 Auto Shkolla Juridica e Re. Të gjitha të drejtat e rezervuara.</p>
+    </div>
+  </footer>
+
+</body>
+</html>
