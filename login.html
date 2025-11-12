@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="sq">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hyrje - Auto Shkolla Juridica e Re</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .error { display: none; }
+    .error.show { display: block; }
+  </style>
+  <script>
+    function toggleMenu() {
+      const menu = document.getElementById('mobile-menu');
+      menu.classList.toggle('hidden');
+    }
+
+    function handleLogin(e) {
+      e.preventDefault();
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+      const errorDiv = document.getElementById('error-message');
+      
+      if (!email || !password) {
+        errorDiv.textContent = 'Ju lutemi plotësoni të gjitha fushat.';
+        errorDiv.classList.add('show');
+        return;
+      }
+      
+      // Store auth data in localStorage
+      localStorage.setItem('user', JSON.stringify({
+        email: email,
+        name: email.split('@')[0],
+        loginTime: new Date().toISOString()
+      }));
+      
+      errorDiv.classList.remove('show');
+      window.location.href = 'dashboard.html';
+    }
+  </script>
+</head>
+
+<body class="bg-gradient-to-br from-red-50 to-red-100 flex flex-col min-h-screen">
+
+  <!-- NAVBAR -->
+  <nav class="bg-red-800 shadow-lg">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center h-16">
+        <div class="flex items-center">
+          <img class="h-10 w-auto rounded-md" src="IMG_4779.jpeg" alt="Logo" />
+          <div class="hidden sm:flex space-x-8 ml-8">
+            <a href="index.html" class="text-white hover:text-red-200 transition">Ballina</a>
+            <a href="veturat.html" class="text-white hover:text-red-200 transition">Veturat</a>
+            <a href="kontakti.html" class="text-white hover:text-red-200 transition">Kontakti</a>
+          </div>
+        </div>
+        <div class="hidden sm:flex gap-4">
+          <a href="login.html" class="bg-white text-red-800 px-4 py-2 rounded-lg font-medium hover:bg-red-50 transition">Hyrje</a>
+          <a href="signup.html" class="bg-red-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-red-700 transition">Regjistrim</a>
+        </div>
+        <div class="sm:hidden">
+          <button onclick="toggleMenu()" class="text-white">
+            <svg class="h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+    <div id="mobile-menu" class="hidden sm:hidden bg-red-700 border-t border-red-600">
+      <a href="index.html" class="block px-4 py-3 text-white hover:bg-red-600">Ballina</a>
+      <a href="veturat.html" class="block px-4 py-3 text-white hover:bg-red-600">Veturat</a>
+      <a href="kontakti.html" class="block px-4 py-3 text-white hover:bg-red-600">Kontakti</a>
+      <a href="login.html" class="block px-4 py-3 text-white hover:bg-red-600 border-t border-red-600">Hyrje</a>
+      <a href="signup.html" class="block px-4 py-3 text-white hover:bg-red-600">Regjistrim</a>
+    </div>
+  </nav>
+
+  <!-- MAIN CONTENT -->
+  <main class="flex-grow flex items-center justify-center py-12 px-4">
+    <div class="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-md">
+      <div class="text-center mb-8">
+        <h1 class="text-3xl font-bold text-red-800">Mirë se vini!</h1>
+        <p class="text-gray-600 mt-2">Hyni në llogarinë tuaj për të filluar</p>
+      </div>
+
+      <form onsubmit="handleLogin(event)" class="space-y-5">
+        <div id="error-message" class="error text-red-600 bg-red-50 p-3 rounded-lg text-sm"></div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-2">Email</label>
+          <input type="email" id="email" class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-red-500 focus:outline-none transition" placeholder="juaj@email.com">
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-2">Fjalëkalimi</label>
+          <input type="password" id="password" class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-red-500 focus:outline-none transition" placeholder="••••••••">
+        </div>
+
+        <button type="submit" class="w-full bg-red-700 hover:bg-red-800 text-white font-bold py-3 rounded-lg transition duration-200 mt-6">Hyni</button>
+      </form>
+
+      <div class="text-center mt-6">
+        <p class="text-gray-600">Nuk keni llogari? <a href="signup.html" class="text-red-700 font-medium hover:underline">Regjistrohuni këtu</a></p>
+      </div>
+    </div>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="bg-red-800 text-white py-6 mt-auto">
+    <div class="max-w-7xl mx-auto px-4 text-center">
+      <p class="font-medium">&copy; 2025 Auto Shkolla Juridica e Re. Të gjitha të drejtat e rezervuara.</p>
+    </div>
+  </footer>
+
+</body>
+</html>

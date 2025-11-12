@@ -10,21 +10,52 @@
       const menu = document.getElementById('mobile-menu');
       menu.classList.toggle('hidden');
     }
+
+    function isLoggedIn() {
+      return !!localStorage.getItem('user');
+    }
+
+    function updateNavbar() {
+      const authLinks = document.getElementById('auth-links');
+      
+      if (isLoggedIn()) {
+        const user = JSON.parse(localStorage.getItem('user'));
+        authLinks.innerHTML = `
+          <div class="flex items-center gap-4">
+            <span class="text-white text-sm">Përshëndetje, ${user.name || user.email}!</span>
+            <a href="dashboard.html" class="bg-white text-red-800 px-4 py-2 rounded-lg font-medium hover:bg-red-50 transition">Tabla e Kontrollit</a>
+            <button onclick="logout()" class="bg-red-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-red-700 transition">Dilni</button>
+          </div>
+        `;
+      }
+    }
+
+    function logout() {
+      localStorage.removeItem('user');
+      window.location.href = 'kontakti.html';
+    }
+
+    window.addEventListener('load', updateNavbar);
   </script>
 </head>
 
 <body class="bg-gray-50 flex flex-col min-h-screen">
 
   <!-- NAVBAR -->
-  <nav class="bg-red-800 p-3">
+  <nav class="bg-red-800 p-3 shadow-lg">
     <div class="mx-auto max-w-7xl flex justify-between items-center">
       <div class="flex items-center">
         <img class="h-10 w-auto rounded-md" src="IMG_4779.jpeg" alt="Logo" />
         <div class="hidden sm:flex space-x-6 ml-6">
-          <a href="index.html" class="text-white font-medium hover:text-gray-300">Ballina</a>
-          <a href="veturat.html" class="text-white font-medium hover:text-gray-300">Veturat</a>
-          <a href="#" class="text-white font-medium hover:text-gray-300">Kontakti</a>
+          <a href="index.html" class="text-white font-medium hover:text-gray-300 transition">Ballina</a>
+          <a href="veturat.html" class="text-white font-medium hover:text-gray-300 transition">Veturat</a>
+          <a href="kontakti.html" class="text-white font-medium hover:text-gray-300 transition">Kontakti</a>
         </div>
+      </div>
+      <!-- Added auth links div for dynamic content -->
+      <div id="auth-links" class="hidden sm:flex gap-4">
+        <a href="login.html" class="bg-white text-red-800 px-4 py-2 rounded-lg font-medium hover:bg-red-50 transition">Hyrje</a>
+        <a href="signup.html" class="bg-red-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-red-700 transition">Regjistrim</a>
       </div>
       <!-- Mobile menu button -->
       <div class="sm:hidden">
@@ -40,7 +71,7 @@
     <div id="mobile-menu" class="hidden sm:hidden bg-red-700 transition-all duration-300">
       <a href="index.html" class="block px-4 py-3 text-white hover:bg-red-600">Ballina</a>
       <a href="veturat.html" class="block px-4 py-3 text-white hover:bg-red-600">Veturat</a>
-      <a href="#" class="block px-4 py-3 text-white hover:bg-red-600">Kontakti</a>
+      <a href="kontakti.html" class="block px-4 py-3 text-white hover:bg-red-600">Kontakti</a>
     </div>
   </nav>
 
@@ -52,7 +83,6 @@
     <p class="text-gray-800 text-xl">📧 <strong>Email:</strong> rabit_o@hotmail.com</p>
   </div>
 </main>
-
 
  <!-- FOOTER -->
   <footer class="bg-red-800 text-white py-8 mt-10">
