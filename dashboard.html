@@ -5,82 +5,150 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Tabla e Kontrollit - Auto Shkolla Juridica e Re</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <style>
-    .modal { display: none; }
-    .modal.show { display: block; }
-    .progress-bar { transition: width 0.3s ease; }
-  </style>
+  <script src="data.js"></script>
+</head>
+
+<body class="bg-gray-100 flex flex-col min-h-screen">
+
+  <!-- NAVBAR -->
+  <nav class="bg-red-800 shadow-lg">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center h-16">
+        <div class="flex items-center">
+          <div class="h-10 w-10 bg-white rounded-md flex items-center justify-center font-bold text-red-800">AS</div>
+          <div class="hidden sm:flex space-x-8 ml-8">
+            <a href="index.html" class="text-white hover:text-red-200 transition">Ballina</a>
+            <a href="veturat.html" class="text-white hover:text-red-200 transition">Veturat</a>
+            <a href="kontakti.html" class="text-white hover:text-red-200 transition">Kontakti</a>
+          </div>
+        </div>
+        <button onclick="logout()" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg font-medium transition">Dilni</button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- MAIN CONTENT -->
+  <main class="flex-grow py-12 px-4">
+    <div class="max-w-7xl mx-auto">
+      <div class="mb-8">
+        <h1 class="text-4xl font-bold text-red-800">Përshëndetje, <span id="userName">Përdorues</span>!</h1>
+        <p class="text-gray-600 mt-2">Mirë se vini në tablën tuaj të kontrollit</p>
+      </div>
+
+      <!-- Enrolled Courses -->
+      <div class="bg-white rounded-lg shadow-md p-8 mb-8">
+        <h2 class="text-2xl font-bold text-red-800 mb-6">Kurset Tuaja</h2>
+        <div id="enrolled-courses" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <p class="text-gray-600 col-span-full text-center py-8">Nuk keni kurse të regjistruara aktualisht.</p>
+        </div>
+      </div>
+
+      <!-- Available Courses -->
+      <div class="bg-white rounded-lg shadow-md p-8 mb-8">
+        <h2 class="text-2xl font-bold text-red-800 mb-6">Kurset e Disponueshme</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div class="border-2 border-gray-200 rounded-lg p-6 hover:border-red-700 hover:shadow-lg transition">
+            <h3 class="text-xl font-bold text-gray-800 mb-2">Patentë Kategoria B</h3>
+            <p class="text-gray-600 mb-4">Kurs 40 orësh për marrjen e patentës.</p>
+            <button onclick="enrollCourse('Patentë Kategoria B', 40)" class="bg-red-700 hover:bg-red-800 text-white font-medium py-2 px-4 rounded-lg transition">Regjistrohu</button>
+          </div>
+
+          <div class="border-2 border-gray-200 rounded-lg p-6 hover:border-red-700 hover:shadow-lg transition">
+            <h3 class="text-xl font-bold text-gray-800 mb-2">Teste Teorike</h3>
+            <p class="text-gray-600 mb-4">Praktiko pyetjet teorike sipas rregullores.</p>
+            <button onclick="enrollCourse('Teste Teorike', 20)" class="bg-red-700 hover:bg-red-800 text-white font-medium py-2 px-4 rounded-lg transition">Regjistrohu</button>
+          </div>
+
+          <div class="border-2 border-gray-200 rounded-lg p-6 hover:border-red-700 hover:shadow-lg transition">
+            <h3 class="text-xl font-bold text-gray-800 mb-2">Mësime Praktike</h3>
+            <p class="text-gray-600 mb-4">Planifiko mësimet praktike me instruktorët.</p>
+            <button onclick="enrollCourse('Mësime Praktike', 30)" class="bg-red-700 hover:bg-red-800 text-white font-medium py-2 px-4 rounded-lg transition">Regjistrohu</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bookings -->
+      <div class="bg-white rounded-lg shadow-md p-8">
+        <h2 class="text-2xl font-bold text-red-800 mb-6">Rezervimet Tuaja</h2>
+        <button onclick="openBookingModal()" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg font-medium mb-6 transition">Krijoni Rezervim të Ri</button>
+        <div id="bookings-list" class="grid grid-cols-1 gap-4">
+          <p class="text-gray-600 col-span-full text-center py-8">Nuk keni rezervime aktualisht.</p>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Booking Modal -->
+  <div id="booking-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+    <div class="bg-white rounded-lg shadow-2xl p-8 w-full max-w-md">
+      <h2 class="text-2xl font-bold text-red-800 mb-6">Krijoni Rezervim</h2>
+      <form onsubmit="submitBooking(event)">
+        <div class="mb-4">
+          <label class="block text-sm font-medium text-gray-700 mb-2">Kursi</label>
+          <select id="booking-course" class="w-full px-4 py-2 border-2 border-gray-200 rounded-lg focus:border-red-500 focus:outline-none transition" required>
+            <option>Zgjidh kursin</option>
+          </select>
+        </div>
+
+        <div class="mb-4">
+          <label class="block text-sm font-medium text-gray-700 mb-2">Data</label>
+          <input type="date" id="booking-date" class="w-full px-4 py-2 border-2 border-gray-200 rounded-lg focus:border-red-500 focus:outline-none transition" required>
+        </div>
+
+        <div class="mb-4">
+          <label class="block text-sm font-medium text-gray-700 mb-2">Ora</label>
+          <input type="time" id="booking-time" class="w-full px-4 py-2 border-2 border-gray-200 rounded-lg focus:border-red-500 focus:outline-none transition" required>
+        </div>
+
+        <div class="mb-6">
+          <label class="block text-sm font-medium text-gray-700 mb-2">Lloji i Mësimit</label>
+          <select id="booking-type" class="w-full px-4 py-2 border-2 border-gray-200 rounded-lg focus:border-red-500 focus:outline-none transition" required>
+            <option>Praktik</option>
+            <option>Teorik</option>
+            <option>Hybrid</option>
+          </select>
+        </div>
+
+        <div class="flex gap-4">
+          <button type="submit" class="flex-1 bg-green-600 hover:bg-green-700 text-white font-bold py-2 rounded-lg transition">Rezervo</button>
+          <button type="button" onclick="closeBookingModal()" class="flex-1 bg-gray-400 hover:bg-gray-500 text-white font-bold py-2 rounded-lg transition">Anulo</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="bg-red-800 text-white py-8 mt-10">
+    <div class="max-w-7xl mx-auto px-4 text-center">
+      <p class="text-lg font-bold">&copy; 2025 Auto Shkolla Juridica e Re. Të gjitha të drejtat e rezervuara.</p>
+    </div>
+  </footer>
+
   <script>
-    let userCourses = [];
-    let userBookings = [];
-
-    function toggleMenu() {
-      document.getElementById('mobile-menu').classList.toggle('hidden');
-    }
-
-    // ✅ FUNKSIONI QË MUNGONTE
     function logout() {
       localStorage.removeItem('user');
-      window.location.href = 'login.html';
+      localStorage.removeItem('currentUser');
+      window.location.href = 'index.html';
     }
 
-    function loadUserInfo() {
+    function loadDashboard() {
       const user = JSON.parse(localStorage.getItem('user'));
       if (!user) {
-        // për testim mundesh me aktivizu user manualisht
-        // localStorage.setItem('user', JSON.stringify({ name: "Test", email: "test@test.com", phone: "044000000" }));
         window.location.href = 'login.html';
         return;
       }
+
       document.getElementById('userName').textContent = user.name || user.email;
-      document.getElementById('userEmail').textContent = user.email;
-      document.getElementById('userPhone').textContent = user.phone || 'Nuk është specifikuar';
-      loadUserCourses();
-      loadUserBookings();
+      loadEnrolledCourses();
+      loadBookings();
+      populateBookingCourses();
     }
 
-    function loadUserCourses() {
-      const allCourses = JSON.parse(localStorage.getItem('allCourses')) || [];
+    function loadEnrolledCourses() {
+      const enrollments = JSON.parse(localStorage.getItem('enrollments') || '[]');
       const user = JSON.parse(localStorage.getItem('user'));
-      userCourses = allCourses.filter(course => course.userId === user.email);
-      displayEnrolledCourses();
-    }
-
-    function loadUserBookings() {
-      const allBookings = JSON.parse(localStorage.getItem('allBookings')) || [];
-      const user = JSON.parse(localStorage.getItem('user'));
-      userBookings = allBookings.filter(booking => booking.userId === user.email);
-      displayBookings();
-    }
-
-    function enrollCourse(courseName) {
-      const user = JSON.parse(localStorage.getItem('user'));
-      const allCourses = JSON.parse(localStorage.getItem('allCourses')) || [];
-
-      const alreadyEnrolled = allCourses.some(c => c.courseName === courseName && c.userId === user.email);
-      if (alreadyEnrolled) {
-        alert('Ju jeni tashmë i regjistruar në këtë kurs.');
-        return;
-      }
-
-      const newCourse = {
-        id: Date.now(),
-        courseName,
-        userId: user.email,
-        enrolledDate: new Date().toISOString(),
-        progress: 0,
-        hoursCompleted: 0,
-        totalHours: courseName === 'Patentë Kategoria B' ? 40 : 20,
-        status: 'Në Progres'
-      };
-
-      allCourses.push(newCourse);
-      localStorage.setItem('allCourses', JSON.stringify(allCourses));
-      loadUserCourses();
-      alert('Ju u regjistruat me sukses në ' + courseName);
-    }
-
-    function displayEnrolledCourses() {
+      const userCourses = enrollments.filter(e => e.userEmail === user.email);
+      
       const container = document.getElementById('enrolled-courses');
       if (userCourses.length === 0) {
         container.innerHTML = '<p class="text-gray-600 col-span-full text-center py-8">Nuk keni kurse të regjistruara aktualisht.</p>';
@@ -95,81 +163,129 @@
               <h3 class="text-lg font-bold text-gray-800">${course.courseName}</h3>
               <span class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-medium">${course.status}</span>
             </div>
-            <p class="text-gray-600 mb-3">Orët e përfunduara: <span class="font-bold">${course.hoursCompleted}/${course.totalHours}</span></p>
+            <p class="text-gray-600 mb-3">Orët: <span class="font-bold">${course.hoursCompleted}/${course.totalHours}</span></p>
+            <div class="flex items-center gap-2 mb-3">
+              <input
+                id="hours-input-${course.id}"
+                type="number"
+                min="0"
+                max="${course.totalHours}"
+                value="${course.hoursCompleted}"
+                class="w-24 px-2 py-1 border-2 border-gray-200 rounded-lg focus:border-red-500 focus:outline-none text-sm"
+              />
+              <button
+                type="button"
+                onclick="updateCourseHours(${course.id})"
+                class="bg-red-700 hover:bg-red-800 text-white text-sm font-medium px-3 py-1 rounded-lg transition"
+              >Ruaj Orët</button>
+            </div>
             <div class="w-full bg-gray-200 rounded-full h-2 mb-3">
-              <div class="progress-bar bg-green-600 h-2 rounded-full" style="width: ${progress}%"></div>
+              <div class="bg-green-600 h-2 rounded-full" style="width: ${progress}%"></div>
             </div>
-            <p class="text-sm text-gray-600 mb-4">Përqindja: ${progress}%</p>
-            <div class="flex gap-2">
-              <button onclick="bookLesson('${course.courseName}')" class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded text-sm transition">Rezervoni Orën</button>
-              <button onclick="updateProgress(${course.id})" class="bg-yellow-600 hover:bg-yellow-700 text-white px-3 py-2 rounded text-sm transition">Përditëso</button>
-            </div>
+            <p class="text-sm text-gray-600">Përqindja: ${progress}%</p>
           </div>
         `;
       }).join('');
     }
 
-    function updateProgress(courseId) {
-      const course = userCourses.find(c => c.id === courseId);
-      if (!course) return;
-      const hoursToAdd = parseInt(prompt(`Shtoni orë për "${course.courseName}". Aktualisht: ${course.hoursCompleted}/${course.totalHours}`, "1"));
-      if (!isNaN(hoursToAdd) && hoursToAdd > 0) {
-        const allCourses = JSON.parse(localStorage.getItem('allCourses'));
-        const courseIndex = allCourses.findIndex(c => c.id === courseId);
-        if (courseIndex !== -1) {
-          allCourses[courseIndex].hoursCompleted = Math.min(allCourses[courseIndex].hoursCompleted + hoursToAdd, allCourses[courseIndex].totalHours);
-          if (allCourses[courseIndex].hoursCompleted === allCourses[courseIndex].totalHours) {
-            allCourses[courseIndex].status = 'Përfunduar';
-          }
-          localStorage.setItem('allCourses', JSON.stringify(allCourses));
-          loadUserCourses();
-        }
+    function updateCourseHours(id) {
+      const enrollments = JSON.parse(localStorage.getItem('enrollments') || '[]');
+      const index = enrollments.findIndex(e => e.id === id);
+      if (index === -1) {
+        return;
       }
+
+      const course = enrollments[index];
+      const input = document.getElementById(`hours-input-${id}`);
+      if (!input) {
+        return;
+      }
+
+      let value = parseInt(input.value, 10);
+      if (isNaN(value)) {
+        value = 0;
+      }
+
+      if (value < 0) {
+        value = 0;
+      }
+      if (value > course.totalHours) {
+        value = course.totalHours;
+      }
+
+      course.hoursCompleted = value;
+      enrollments[index] = course;
+      localStorage.setItem('enrollments', JSON.stringify(enrollments));
+      loadEnrolledCourses();
     }
 
-    function bookLesson(courseName) {
-      document.getElementById('lesson-course').value = courseName;
-      document.getElementById('booking-modal').classList.add('show');
+    function enrollCourse(courseName, hours) {
+      const user = JSON.parse(localStorage.getItem('user'));
+      const enrollments = JSON.parse(localStorage.getItem('enrollments') || '[]');
+
+      if (enrollments.find(e => e.userEmail === user.email && e.courseName === courseName)) {
+        alert('Ju jeni tashmë i regjistruar në këtë kurs.');
+        return;
+      }
+
+      enrollments.push({
+        id: Date.now(),
+        userEmail: user.email,
+        courseName,
+        totalHours: hours,
+        hoursCompleted: 0,
+        status: 'Në Progres',
+        enrolledDate: new Date().toISOString()
+      });
+
+      localStorage.setItem('enrollments', JSON.stringify(enrollments));
+      loadEnrolledCourses();
+      alert('Ju u regjistruat me sukses në ' + courseName);
     }
 
-    function closeModal() {
-      document.getElementById('booking-modal').classList.remove('show');
+    function populateBookingCourses() {
+      const user = JSON.parse(localStorage.getItem('user'));
+      const enrollments = JSON.parse(localStorage.getItem('enrollments') || '[]');
+      const userCourses = enrollments.filter(e => e.userEmail === user.email);
+      const select = document.getElementById('booking-course');
+      
+      select.innerHTML = '<option>Zgjidh kursin</option>' + userCourses.map(c => `<option>${c.courseName}</option>`).join('');
+    }
+
+    function openBookingModal() {
+      document.getElementById('booking-modal').classList.remove('hidden');
+    }
+
+    function closeBookingModal() {
+      document.getElementById('booking-modal').classList.add('hidden');
     }
 
     function submitBooking(e) {
       e.preventDefault();
       const user = JSON.parse(localStorage.getItem('user'));
-      const courseName = document.getElementById('lesson-course').value;
-      const lessonDate = document.getElementById('lesson-date').value;
-      const lessonTime = document.getElementById('lesson-time').value;
-      const lessonType = document.getElementById('lesson-type').value;
-
-      if (!lessonDate || !lessonTime) {
-        alert('Ju lutemi plotësoni të gjitha fushat');
-        return;
-      }
-
-      const allBookings = JSON.parse(localStorage.getItem('allBookings')) || [];
-      const booking = {
+      const bookings = JSON.parse(localStorage.getItem('bookings') || '[]');
+      
+      bookings.push({
         id: Date.now(),
-        userId: user.email,
-        courseName,
-        date: lessonDate,
-        time: lessonTime,
-        type: lessonType,
-        status: 'Në Pritje',
-        bookingDate: new Date().toISOString()
-      };
+        userEmail: user.email,
+        course: document.getElementById('booking-course').value,
+        date: document.getElementById('booking-date').value,
+        time: document.getElementById('booking-time').value,
+        type: document.getElementById('booking-type').value,
+        status: 'Në Pritje'
+      });
 
-      allBookings.push(booking);
-      localStorage.setItem('allBookings', JSON.stringify(allBookings));
-      loadUserBookings();
-      closeModal();
+      localStorage.setItem('bookings', JSON.stringify(bookings));
+      loadBookings();
+      closeBookingModal();
       alert('Ora u rezervua me sukses!');
-      document.getElementById('booking-form').reset();
     }
 
-    function displayBookings() {
+    function loadBookings() {
+      const user = JSON.parse(localStorage.getItem('user'));
+      const bookings = JSON.parse(localStorage.getItem('bookings') || '[]');
+      const userBookings = bookings.filter(b => b.userEmail === user.email);
+      
       const container = document.getElementById('bookings-list');
       if (userBookings.length === 0) {
         container.innerHTML = '<p class="text-gray-600 col-span-full text-center py-8">Nuk keni rezervime aktualisht.</p>';
@@ -180,7 +296,7 @@
         <div class="bg-white rounded-lg shadow-md p-4 border-l-4 border-blue-600">
           <div class="flex justify-between items-start">
             <div>
-              <p class="font-bold text-gray-800">${booking.courseName}</p>
+              <p class="font-bold text-gray-800">${booking.course}</p>
               <p class="text-sm text-gray-600">Lloji: ${booking.type}</p>
               <p class="text-sm text-gray-600">Data: ${new Date(booking.date).toLocaleDateString('sq-AL')}</p>
               <p class="text-sm text-gray-600">Ora: ${booking.time}</p>
@@ -192,140 +308,15 @@
       `).join('');
     }
 
-    function cancelBooking(bookingId) {
-      if (confirm('A jeni të sigurt se doni ta anuloni këtë rezervim?')) {
-        const allBookings = JSON.parse(localStorage.getItem('allBookings'));
-        const filtered = allBookings.filter(b => b.id !== bookingId);
-        localStorage.setItem('allBookings', JSON.stringify(filtered));
-        loadUserBookings();
+    function cancelBooking(id) {
+      if (confirm('A jeni të sigurt?')) {
+        const bookings = JSON.parse(localStorage.getItem('bookings') || '[]');
+        localStorage.setItem('bookings', JSON.stringify(bookings.filter(b => b.id !== id)));
+        loadBookings();
       }
     }
 
-    function startTheoryTest() {
-      generateTheoryQuestions();
-      document.getElementById('test-modal').classList.add('show');
-    }
-
-    function closeTestModal() {
-      document.getElementById('test-modal').classList.remove('show');
-      window.testQuestions = null;
-    }
-
-    function generateTheoryQuestions() {
-      const questions = [
-        { question: "Sa është shpejtësia maksimale në qytet?", options: ["40 km/h", "50 km/h", "60 km/h"], answer: 1 },
-        { question: "Cili është ngjyra e dritës që do të thotë ndalesë?", options: ["E kuqe", "E verdhë", "E jeshile"], answer: 0 },
-        { question: "Sa metra duhet të jetë distanca e sigurt?", options: ["10m", "20m", "30m"], answer: 1 },
-        { question: "Kur duhet ndezur dritat e automjetit?", options: ["Vetëm natën", "Kur është errët", "Sipas ligjit"], answer: 2 },
-        { question: "Çfarë do të thotë kjo shenjë?", options: ["Ndalo", "Mos hyrni", "Parkim"], answer: 1 }
-      ];
-
-      window.testQuestions = questions;
-      document.getElementById('test-questions').innerHTML = questions.map((q, i) => `
-        <div class="mb-6 p-4 border rounded-lg bg-gray-50">
-          <p class="font-bold text-gray-800 mb-3">${i + 1}. ${q.question}</p>
-          <div class="space-y-2">
-            ${q.options.map((opt, optIdx) => `
-              <label class="flex items-center p-2 cursor-pointer hover:bg-gray-100 rounded">
-                <input type="radio" name="q${i}" value="${optIdx}" class="mr-3">
-                <span class="text-gray-700">${opt}</span>
-              </label>
-            `).join('')}
-          </div>
-        </div>
-      `).join('');
-    }
-
-    function submitTest() {
-      if (!window.testQuestions) return alert('Testi nuk është ngarkuar.');
-
-      let score = 0;
-      window.testQuestions.forEach((q, idx) => {
-        const selected = document.querySelector(`input[name="q${idx}"]:checked`);
-        if (selected && parseInt(selected.value) === q.answer) score++;
-      });
-
-      const total = window.testQuestions.length;
-      const percent = Math.round((score / total) * 100);
-      alert(`Rezultati juaj: ${score}/${total} (${percent}%)`);
-      alert(percent >= 80 ? 'Urime! Keni kaluar testin!' : 'Provo përsëri më vonë.');
-      closeTestModal();
-    }
-
-    window.addEventListener('load', loadUserInfo);
+    window.addEventListener('load', loadDashboard);
   </script>
-</head>
-
-<body class="bg-gray-100 flex flex-col min-h-screen">
-
-  <!-- NAVBAR -->
-  <nav class="bg-red-800 shadow-lg">
-    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-      <div class="flex justify-between items-center h-16">
-        <div class="flex items-center">
-          <img class="h-10 w-auto rounded-md" src="IMG_4779.jpeg" alt="Logo" />
-          <div class="hidden sm:flex space-x-8 ml-8">
-            <a href="index.html" class="text-white hover:text-red-200 transition">Ballina</a>
-            <a href="veturat.html" class="text-white hover:text-red-200 transition">Veturat</a>
-            <a href="kontakti.html" class="text-white hover:text-red-200 transition">Kontakti</a>
-          </div>
-        </div>
-        <div class="hidden sm:flex gap-4">
-          <button onclick="logout()" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg font-medium transition">Dilni</button>
-        </div>
-        <div class="sm:hidden">
-          <button onclick="toggleMenu()" class="text-white">
-            <svg class="h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
-            </svg>
-          </button>
-        </div>
-      </div>
-    </div>
-    <div id="mobile-menu" class="hidden sm:hidden bg-red-700 border-t border-red-600">
-      <a href="index.html" class="block px-4 py-3 text-white hover:bg-red-600">Ballina</a>
-      <a href="veturat.html" class="block px-4 py-3 text-white hover:bg-red-600">Veturat</a>
-      <a href="kontakti.html" class="block px-4 py-3 text-white hover:bg-red-600">Kontakti</a>
-      <button onclick="logout()" class="w-full text-left px-4 py-3 text-white hover:bg-red-600 border-t border-red-600">Dilni</button>
-    </div>
-  </nav>
-
-  <!-- MAIN CONTENT -->
-  <main class="flex-grow py-12 px-4">
-    <div class="max-w-7xl mx-auto">
-      <div class="mb-8">
-        <h1 class="text-4xl font-bold text-red-800">Përshëndetje, <span id="userName">Përdorues</span>!</h1>
-        <p class="text-gray-600 mt-2">Mirë se vini në tablën tuaj të kontrollit</p>
-      </div>
-
-      <!-- KURSET -->
-      <div class="bg-white rounded-lg shadow-md p-8 mb-8">
-        <h2 class="text-2xl font-bold text-red-800 mb-6">Kurset Tuaja</h2>
-        <div id="enrolled-courses" class="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <p class="text-gray-600 col-span-full text-center py-8">Nuk keni kurse të regjistruara aktualisht.</p>
-        </div>
-      </div>
-
-      <!-- KURSET DISPONUESHME -->
-      <div class="bg-white rounded-lg shadow-md p-8 mb-8">
-        <h2 class="text-2xl font-bold text-red-800 mb-6">Kurset e Disponueshme</h2>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div class="border-2 border-gray-200 rounded-lg p-6 hover:border-red-700 hover:shadow-lg transition">
-            <h3 class="text-xl font-bold text-gray-800 mb-2">Patentë Kategoria B</h3>
-            <p class="text-gray-600 mb-4">Kurs 40 orësh për marrjen e patentës së kategorisë B me instruktorë me përvojë.</p>
-            <button onclick="enrollCourse('Patentë Kategoria B')" class="bg-red-700 hover:bg-red-800 text-white font-medium py-2 px-4 rounded-lg transition">Regjistrohu Këtu</button>
-          </div>
-
-          <div class="border-2 border-gray-200 rounded-lg p-6 hover:border-red-700 hover:shadow-lg transition">
-            <h3 class="text-xl font-bold text-gray-800 mb-2">Teste Teorike</h3>
-            <p class="text-gray-600 mb-4">Praktiko pyetjet teorike sipas rregullores më të re.</p>
-            <button onclick="enrollCourse('Teste Teorike')" class="bg-red-700 hover:bg-red-800 text-white font-medium py-2 px-4 rounded-lg transition">Regjistrohu Këtu</button>
-          </div>
-
-          <div class="border-2 border-gray-200 rounded-lg p-6 hover:border-red-700 hover:shadow-lg transition">
-            <h3 class="text-xl font-bold text-gray-800 mb-2">Mësime Praktike</h3>
-            <p class="text-gray-600 mb-4">Planifiko mësimet praktike me instruktorët tanë të licencuar.</p>
-            <button onclick="enrollCourse('Mësime Praktike')" class="bg-red-700 hover:bg-red-800 text-white font-medium py-2 px-4 rounded-lg transition">Regjistrohu Këtu</button>
-          </div>
-
-          <div class="border-2 border-gray-200 rounded-lg p-6 hover:border-red-700 hover
+</body>
+</html>
